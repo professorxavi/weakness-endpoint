@@ -1,0 +1,22 @@
+{
+  "name": "poke-api",
+  "version": "1.0.0",
+  "description": "endpoint for my team builder",
+  "main": "starter.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "pokedex-promise-v2": "^3.1.1"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "nodemon": "^1.18.4"
+  },
+  "scripts": {
+    "start": "node starter.js",
+    "dev": "nodemon starter.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "professorxavi",
+  "license": "ISC"
+}
