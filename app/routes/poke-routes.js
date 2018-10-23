@@ -15,10 +15,9 @@ module.exports = (app, pokedex) => {
       .then(response => {
         let typesArr = []
         response.types.forEach(t => typesArr.push('/api/v2/type/'+ t.type.name))
-        // console.log(typesArr);
         pokedex.resource(typesArr)
-          .then(response => {
-              let damageRelations = combineWeaknesses.combine(response)
+          .then(secondResponse => {
+              let damageRelations = combineWeaknesses.combine(secondResponse)
               res.send(damageRelations)
           })
         // res.send(response)
