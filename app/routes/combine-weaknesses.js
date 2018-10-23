@@ -59,12 +59,11 @@ module.exports = {
       let tempHalf = typings.half_damage_from
       let tempDouble = typings.double_damage_from
       for (let weakness of tempTypings.double_damage_from) {
-        for (let resistance of tempTypings.half_damage_from) {
-          if (resistance.name.indexOf(weakness.name) !== -1) {
-            endResult.neutral_damage_from.push(resistance)
-            tempHalf = tempHalf.filter(w => w.name !== resistance.name)
-            tempDouble = tempDouble.filter(w => w.name !== resistance.name)
-          }
+        const existsInResist = tempTypings.half_damage_from.some(hd => hd.name === weakness.name)
+        if (existsInResist) {
+          endResult.neutral_damage_from.push(weakness)
+          tempHalf = tempHalf.filter(w => w.name !== weakness.name)
+          tempDouble = tempDouble.filter(w => w.name !== weakness.name)
         }
       }
       endResult.half_damage_from = tempHalf
@@ -72,49 +71,21 @@ module.exports = {
     }
 
     const filterImmunities = () => {
-      for (let immunity of damageRelations.no_damage_from) {
-        for (let key in damageRelations) {
-          for (let item of damageRelations[key]) {
-            if (item.name.indexOf(immunity.name) !== -1) {
-
-              if (endResult.hasOwnProperty(key)) {
-                endResult[key] = endResult[key].filter(w => w.name !== immunity.name)
-              }
-            }
+      for (let key in damageRelations) {
+        for (let item of damageRelations[key]) {
+          const isImmunity = damageRelations.no_damage_from.some(immunity => immunity.name === item.name)
+          if (isImmunity && endResult.hasOwnProperty(key)) {
+            endResult[key] = endResult[key].filter(w => w.name !== item.name)
           }
         }
       }
       endResult.no_damage_from = damageRelations.no_damage_from
     }
 
-    const getRemainingNeutral = (all) => {
-      let neutrals = all
-      let oldNeutrals = endResult.neutral_damage_from
-      for (let neutral of all.types) {
-        // console.log('looking at ', neutral.name);
-        for (let key in endResult) {
-          for (let item of endResult[key]) {
-            if (item.name.indexOf(neutral.name) !== -1) {
-              if (endResult.hasOwnProperty(key)) {
-                // console.log('filtering out ', neutral.name);
-                neutrals.types = neutrals.types.filter(t => t.name !== neutral.name)
-              }
-            }
-          }
-        }
-      }
-    //  console.log('neutral damage from', allTypes.types);
-      // neutrals = allTypes.types
-      endResult.neutral_damage_from = oldNeutrals.concat(neutrals.types)
-    }
-
-
     findQuadWeakness(damageRelations.double_damage_from)
     findQuadResistance(damageRelations.half_damage_from)
     filterNeutralDamage(tempTypings)
     filterImmunities()
-    getRemainingNeutral(allTypes)
-
 
     return endResult
   }
